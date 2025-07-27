@@ -1,0 +1,11 @@
+-r base.in
+
+# Pre-commit
+pre-commit~=4.2.0
+
+# Testing framework
+pytest~=8.3.5
+pytest-django~=4.11.1
+
+# Distributed testing
+pytest-xdist~=3.6.1
