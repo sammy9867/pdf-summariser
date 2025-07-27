@@ -21,8 +21,8 @@ services:
       - postgres-db
     ports:
       - "8000:8000"
-    volumes:
-     - .:/usr/src/pdf_summariser
+    env_file:
+      - ./backend/.env
     networks:
       - pdf-summariser-network
 

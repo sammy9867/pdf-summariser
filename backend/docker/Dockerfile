@@ -1,4 +1,4 @@
-FROM python:3.12-slim-bookworm AS base
+FROM python:3.13-slim-bookworm AS base
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
@@ -31,7 +31,7 @@ RUN pip install -r ${APP_DIR}/requirements/${ENVIRONMENT}.txt
 # ---- Final layer ----
 FROM dependencies AS artifact
 
-COPY src/ .env .pre-commit-config.yaml docker/scripts/ ${APP_DIR}/
+COPY src/ docker/scripts/ ${APP_DIR}/
 
 WORKDIR ${APP_DIR}
 
@@ -39,4 +39,5 @@ RUN chmod +x start_local.sh start.sh
 
 RUN python manage.py collectstatic --no-input
 
+# TODO: Switch between local and prod
 CMD ["./start_local.sh"]

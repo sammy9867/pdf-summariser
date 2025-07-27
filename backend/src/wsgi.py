@@ -1,5 +1,5 @@
 """
-WSGI config for metric project.
+WSGI config for pdf-summariser project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
