@@ -1,0 +1,7 @@
+-r base.in
+
+# Pre-commit
+pre-commit~=4.2.0
+
+# Debugger
+ipdb~=0.13.13

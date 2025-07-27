@@ -1,0 +1,4 @@
+-r base.in
+
+# WSGI handler
+gunicorn~=23.0.0

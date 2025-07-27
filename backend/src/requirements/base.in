@@ -1,0 +1,13 @@
+# Django
+Django~=5.2.1
+djangorestframework~=3.16.0
+django-cors-headers~=4.7.0
+
+# PostgreSQL database adapter
+psycopg2-binary~=2.9.10
+
+# HTTP
+requests~=2.32.3
+
+# Factory boy
+factory_boy~=3.3.3

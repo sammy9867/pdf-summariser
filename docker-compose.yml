@@ -1,0 +1,33 @@
+services:
+  postgres-db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: pdf_summariser_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    networks:
+      - pdf-summariser-network
+
+  pdf-summariser-backend:
+    build:
+      context: ./backend
+      dockerfile: docker/Dockerfile
+      args:
+        ENVIRONMENT: local
+    depends_on:
+      - postgres-db
+    ports:
+      - "8000:8000"
+    volumes:
+     - .:/usr/src/pdf_summariser
+    networks:
+      - pdf-summariser-network
+
+networks:
+  pdf-summariser-network:
+
+volumes:
+  pg-data:
