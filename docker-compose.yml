@@ -23,6 +23,8 @@ services:
       - "8000:8000"
     env_file:
       - ./backend/.env
+    volumes:
+      - ./backend:/usr/src/pdf_summariser
     networks:
       - pdf-summariser-network
 

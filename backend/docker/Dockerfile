@@ -39,5 +39,7 @@ RUN chmod +x start_local.sh start.sh
 
 RUN python manage.py collectstatic --no-input
 
-# TODO: Switch between local and prod
-CMD ["./start_local.sh"]
+RUN chmod +x start_local.sh start.sh
+
+# TODO: Switch between local/test/prod and handle hosted mount
+CMD ["./docker/scripts/start_local.sh"]
