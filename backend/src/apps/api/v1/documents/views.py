@@ -12,8 +12,8 @@ from apps.documents.models import Document
 
 
 class DocumentUploadView(CreateAPIView):
-    serializer_class = DocumentUploadSerializer
     permission_classes = [AllowAny]
+    serializer_class = DocumentUploadSerializer
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -25,8 +25,9 @@ class DocumentUploadView(CreateAPIView):
 
 
 class DocumentListView(ListAPIView):
-    serializer_class = DocumentListSerializer
+    pagination_class = None
     permission_classes = [AllowAny]
+    serializer_class = DocumentListSerializer
 
     def get_queryset(self):
         session_id = self.request.session.session_key

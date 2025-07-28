@@ -7,11 +7,11 @@ urlpatterns = [
     path(
         "",
         DocumentListView.as_view(),
-        name="api-v1-document-list",
+        name="api-v1-documents-list",
     ),
     path(
         "/upload",
         DocumentUploadView.as_view(),
-        name="api-v1-document-upload",
+        name="api-v1-documents-upload",
     ),
 ]

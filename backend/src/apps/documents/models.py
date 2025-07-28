@@ -18,7 +18,7 @@ class TimeStampedModel(models.Model):
 
 
 class UploadedFile(TimeStampedModel):
-    file = models.FileField(upload_to="uploads/")
+    file = models.FileField(upload_to="media/")
     name = models.CharField(max_length=255)
     size = models.PositiveIntegerField(null=True)
 
