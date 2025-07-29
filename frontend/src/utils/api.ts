@@ -11,4 +11,21 @@ export const api = {
     }
     return response.json();
   },
+
+  uploadDocument: async (file: File): Promise<Document> => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await fetch(`${API_BASE}/documents/upload`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to upload document: ${errorText}`);
+    }
+
+    return response.json();
+  },
 };
