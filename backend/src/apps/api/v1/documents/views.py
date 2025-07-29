@@ -1,14 +1,24 @@
+import json
+
+from django.http import HttpResponseBadRequest, StreamingHttpResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_GET
+
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, ListAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, get_object_or_404
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-
 
 from apps.api.v1.documents.serializers import (
     DocumentListSerializer,
     DocumentUploadSerializer,
 )
 from apps.documents.models import Document
+from apps.documents.services.document_summary import (
+    DocumentSummaryStreamError,
+    document_can_stream_summary,
+    document_stream_summary,
+)
 
 
 class DocumentUploadView(CreateAPIView):
@@ -34,3 +44,29 @@ class DocumentListView(ListAPIView):
         if not session_id:
             return Document.objects.none()
         return Document.objects.filter(session_id=session_id).order_by("-created")
+
+
+@csrf_exempt
+@require_GET
+def document_stream_view(request, document_uuid):
+    document = get_object_or_404(Document, uuid=document_uuid)
+
+    try:
+        document_can_stream_summary(document)
+    except DocumentSummaryStreamError as e:
+        return HttpResponseBadRequest(str(e))
+
+    def generate_sse_event_stream():
+        for word in document_stream_summary(document):
+            data = {"type": "summary", "summary": word}
+            yield f"data: {json.dumps(data)}\n\n"
+
+        end_data = {"type": "end"}
+        yield f"data: {json.dumps(end_data)}\n\n"
+
+    response = StreamingHttpResponse(
+        generate_sse_event_stream(),
+        content_type="text/event-stream",
+    )
+    response["Cache-Control"] = "no-cache"
+    return response
