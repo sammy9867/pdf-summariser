@@ -26,6 +26,19 @@ services:
     networks:
       - pdf-summariser-network
 
+  pdf-summariser-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    depends_on:
+      - pdf-summariser-backend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/usr/src/pdf_summariser
+    networks:
+      - pdf-summariser-network
+
 networks:
   pdf-summariser-network:
 
