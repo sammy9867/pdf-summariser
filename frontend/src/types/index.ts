@@ -13,3 +13,8 @@ export interface Document {
     uploaded_file: UploadedFile;
     uuid: string;
 }
+
+export interface SSEMessage {
+    type: string;
+    data: string;
+}

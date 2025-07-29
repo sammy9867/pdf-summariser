@@ -28,4 +28,8 @@ export const api = {
 
     return response.json();
   },
+
+  streamSummary: (documentUuid: string): EventSource => {
+    return new EventSource(`${API_BASE}/documents/${documentUuid}/stream`);
+  },
 };
