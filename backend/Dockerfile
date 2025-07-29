@@ -19,27 +19,19 @@ RUN pip3 install pip==${PIP_VERSION}
 # ---- Dependency layer ----
 FROM base AS dependencies
 
-ARG ENVIRONMENT
-ENV ENVIRONMENT=${ENVIRONMENT}
-
 COPY src/requirements/ ${APP_DIR}/requirements/
 
-RUN if [ -z "$ENVIRONMENT" ]; then echo "ENVIRONMENT arg is missing!"; exit 1; fi
-
-RUN pip install -r ${APP_DIR}/requirements/${ENVIRONMENT}.txt
+RUN pip install -r ${APP_DIR}/requirements/prod.txt
 
 # ---- Final layer ----
 FROM dependencies AS artifact
 
-COPY src/ docker/scripts/ ${APP_DIR}/
+COPY src/ ${APP_DIR}/
 
 WORKDIR ${APP_DIR}
 
-RUN chmod +x start_local.sh start.sh
+RUN chmod +x scripts/start.sh
 
 RUN python manage.py collectstatic --no-input
 
-RUN chmod +x start_local.sh start.sh
-
-# TODO: Switch between local/test/prod and handle hosted mount
-CMD ["./docker/scripts/start_local.sh"]
+CMD ["scripts/start.sh"]

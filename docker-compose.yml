@@ -14,9 +14,7 @@ services:
   pdf-summariser-backend:
     build:
       context: ./backend
-      dockerfile: docker/Dockerfile
-      args:
-        ENVIRONMENT: local
+      dockerfile: Dockerfile.dev
     depends_on:
       - postgres-db
     ports:
@@ -24,7 +22,7 @@ services:
     env_file:
       - ./backend/.env
     volumes:
-      - ./backend:/usr/src/pdf_summariser
+      - ./backend/src:/usr/src/pdf_summariser
     networks:
       - pdf-summariser-network
 
