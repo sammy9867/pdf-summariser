@@ -8,7 +8,7 @@ class UploadedFileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UploadedFile
-        read_only_fields = ["file", "name", "size", "created", "modified"]
+        read_only_fields = ["created", "file", "modified", "name", "size"]
         fields = read_only_fields
 
     def get_file(self, obj) -> str | None:
@@ -21,12 +21,11 @@ class DocumentListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Document
         read_only_fields = [
-            "id",
+            "created",
+            "modified",
             "session_id",
             "uploaded_file",
             "uuid",
-            "created",
-            "modified",
         ]
         fields = read_only_fields
 

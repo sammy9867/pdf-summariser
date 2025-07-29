@@ -1,6 +1,10 @@
 from django.urls import path
 
-from apps.api.v1.documents.views import DocumentUploadView, DocumentListView
+from apps.api.v1.documents.views import (
+    DocumentListView,
+    DocumentUploadView,
+    document_stream_view,
+)
 
 
 urlpatterns = [
@@ -13,5 +17,10 @@ urlpatterns = [
         "/upload",
         DocumentUploadView.as_view(),
         name="api-v1-documents-upload",
+    ),
+    path(
+        "stream/<uuid:document_uuid>",
+        document_stream_view,
+        name="api-v1-document-summaries-stream",
     ),
 ]
