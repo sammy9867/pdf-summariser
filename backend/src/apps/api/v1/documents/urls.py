@@ -19,7 +19,7 @@ urlpatterns = [
         name="api-v1-documents-upload",
     ),
     path(
-        "stream/<uuid:document_uuid>",
+        "/<uuid:document_uuid>/stream",
         document_stream_view,
         name="api-v1-document-summaries-stream",
     ),
