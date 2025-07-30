@@ -8,9 +8,9 @@ interface DocumentsListProps {
   selectedDocumentUuid?: string;
 }
 
-export const DocumentsList: React.FC<DocumentsListProps> = ({ 
-  onDocumentSelect, 
-  selectedDocumentUuid 
+export const DocumentsList: React.FC<DocumentsListProps> = ({
+  onDocumentSelect,
+  selectedDocumentUuid
 }) => {
   const { data: documents, isLoading, error } = useDocuments();
 
@@ -86,7 +86,7 @@ export const DocumentsList: React.FC<DocumentsListProps> = ({
                 )}
               </div>
             </div>
-            
+
             <div className="document-info">
               <h3 className="document-name" title={document.uploaded_file.name}>
                 {document.uploaded_file.name}
@@ -100,7 +100,7 @@ export const DocumentsList: React.FC<DocumentsListProps> = ({
                 </span>
               </div>
             </div>
-            
+
             <div className="document-card-footer">
               <button className="document-action-button">
                 ✨ Summarize
