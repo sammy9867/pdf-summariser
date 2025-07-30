@@ -30,7 +30,6 @@ def test_document_list_serializer():
     assert {
         "created": DateTimeField().to_representation(document.created),
         "modified": DateTimeField().to_representation(document.modified),
-        "session_id": document.session_id,
         "uploaded_file": UploadedFileSerializer(document.uploaded_file).data,
         "uuid": str(document.uuid),
     } == DocumentListSerializer(document).data

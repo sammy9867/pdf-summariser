@@ -9,7 +9,6 @@ export interface UploadedFile {
 export interface Document {
     created: string;
     modified: string;
-    session_id: string;
     uploaded_file: UploadedFile;
     uuid: string;
 }

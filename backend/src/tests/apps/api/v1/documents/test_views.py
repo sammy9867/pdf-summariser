@@ -44,7 +44,7 @@ class TestDocumentUploadView:
         assert response.status_code == status.HTTP_201_CREATED
         result = response.json()
         document = Document.objects.get(uuid=result["uuid"])
-        assert document.session_id
+        assert document.session_key
         assert result == DocumentListSerializer(document).data
 
     def test_upload__fails_without_file(self, api_client):
@@ -57,7 +57,7 @@ class TestDocumentListView:
     URL = reverse("api-v1-documents-list")
 
     def test_list__success(self, api_client):
-        document = DocumentFactory(session_id=api_client.session.session_key)
+        document = DocumentFactory(session_key=api_client.session.session_key)
         # Different session key, won't be returned
         DocumentFactory()
         response = api_client.get(self.URL, format="json")
@@ -76,7 +76,7 @@ class TestDocumentSummaryStreamView:
 
     @pytest.fixture
     def document(self, stream_api_client):
-        return DocumentFactory(session_id=stream_api_client.session.session_key)
+        return DocumentFactory(session_key=stream_api_client.session.session_key)
 
     @patch("apps.api.v1.documents.views.document_stream_summary")
     @patch("apps.api.v1.documents.views.document_can_stream_summary")

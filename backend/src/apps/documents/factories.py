@@ -29,7 +29,7 @@ class UploadedFileFactory(factory.django.DjangoModelFactory):
 
 
 class DocumentFactory(factory.django.DjangoModelFactory):
-    session_id = factory.Faker("uuid4")
+    session_key = factory.Faker("uuid4")
     uploaded_file = factory.SubFactory(UploadedFileFactory)
     user = factory.SubFactory(UserFactory)
     uuid = factory.LazyFunction(uuid.uuid4)

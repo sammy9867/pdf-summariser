@@ -22,7 +22,7 @@ class UploadedFile(TimeStampedModel):
 
 
 class Document(TimeStampedModel):
-    session_id = models.CharField(max_length=255, db_index=True)
+    session_key = models.CharField(max_length=255, db_index=True)
     uploaded_file = models.ForeignKey(UploadedFile, on_delete=models.PROTECT)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     uuid = models.UUIDField(default=uuid.uuid4, unique=True)
