@@ -13,6 +13,7 @@ from apps.api.v1.documents.serializers import (
     DocumentListSerializer,
     DocumentUploadSerializer,
 )
+from apps.api.v1.documents.utils import get_session_id_from_request
 from apps.documents.models import Document
 from apps.documents.services.document_summary import (
     DocumentSummaryStreamError,
@@ -40,7 +41,7 @@ class DocumentListView(ListAPIView):
     serializer_class = DocumentListSerializer
 
     def get_queryset(self):
-        session_id = self.request.session.session_key
+        session_id = get_session_id_from_request(self.request)
         if not session_id:
             return Document.objects.none()
         return Document.objects.filter(session_id=session_id).order_by("-created")
@@ -49,7 +50,8 @@ class DocumentListView(ListAPIView):
 @csrf_exempt
 @require_GET
 def document_stream_view(request, document_uuid):
-    document = get_object_or_404(Document, uuid=document_uuid)
+    session = get_session_id_from_request(request)
+    document = get_object_or_404(Document, uuid=document_uuid, session_id=session)
 
     try:
         document_can_stream_summary(document)

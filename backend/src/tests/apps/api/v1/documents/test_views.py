@@ -43,7 +43,7 @@ class TestDocumentUploadView:
         response = api_client.post(self.URL, payload, format="multipart")
         assert response.status_code == status.HTTP_201_CREATED
         result = response.json()
-        document = Document.objects.get(id=result["id"])
+        document = Document.objects.get(uuid=result["uuid"])
         assert document.session_id
         assert result == DocumentListSerializer(document).data
 
@@ -75,8 +75,8 @@ class TestDocumentSummaryStreamView:
         )
 
     @pytest.fixture
-    def document(self):
-        return DocumentFactory()
+    def document(self, stream_api_client):
+        return DocumentFactory(session_id=stream_api_client.session.session_key)
 
     @patch("apps.api.v1.documents.views.document_stream_summary")
     @patch("apps.api.v1.documents.views.document_can_stream_summary")
@@ -102,15 +102,12 @@ class TestDocumentSummaryStreamView:
         mock_can_stream_summary.assert_called_once_with(document)
         mock_stream_summary.assert_called_once_with(document)
 
-    @patch("apps.api.v1.documents.views.document_can_stream_summary")
-    def test_stream__fails_when_document_does_not_exist(
-        self,
-        mock_can_stream_summary,
-        stream_api_client,
-    ):
-        mock_can_stream_summary.return_value = True
-
+    def test_stream__fails_when_document_does_not_exist(self, stream_api_client):
         response = stream_api_client.get(self._url())
+        assert response.status_code == status.HTTP_404_NOT_FOUND
+
+    def test_stream__fails_with_invalid_session(self, document):
+        response = Client().get(self._url(document))
         assert response.status_code == status.HTTP_404_NOT_FOUND
 
     @patch("apps.api.v1.documents.views.document_can_stream_summary")
