@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { api } from '../utils/api';
 
 interface UseSummaryResult {
@@ -12,11 +12,11 @@ export const useDocumentSummary = (): UseSummaryResult => {
   const [summary, setSummary] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [eventSource, setEventSource] = useState<EventSource | null>(null);
+  const eventSourceRef = useRef<EventSource | null>(null);
 
-  const startStream = (documentUuid: string) => {
-    if (eventSource) {
-      eventSource.close();
+  const startStream = useCallback((documentUuid: string) => {
+    if (eventSourceRef.current) {
+      eventSourceRef.current.close();
     }
 
     setSummary('');
@@ -24,7 +24,7 @@ export const useDocumentSummary = (): UseSummaryResult => {
     setIsStreaming(true);
 
     const source = api.streamSummary(documentUuid);
-    setEventSource(source);
+    eventSourceRef.current = source;
 
     source.onmessage = (event) => {
       try {
@@ -33,12 +33,12 @@ export const useDocumentSummary = (): UseSummaryResult => {
         if (data.type === 'end') {
           setIsStreaming(false);
           source.close();
-          setEventSource(null);
+          eventSourceRef.current = null;
         } else if (data.type === 'error') {
           setError(data.error || 'An error occurred during streaming');
           setIsStreaming(false);
           source.close();
-          setEventSource(null);
+          eventSourceRef.current = null;
         } else if (data.type === 'summary' && data.summary) {
           setSummary((prev: string) => prev + data.summary);
         }
@@ -47,7 +47,7 @@ export const useDocumentSummary = (): UseSummaryResult => {
         setError('Error parsing stream data');
         setIsStreaming(false);
         source.close();
-        setEventSource(null);
+        eventSourceRef.current = null;
       }
     };
 
@@ -56,17 +56,17 @@ export const useDocumentSummary = (): UseSummaryResult => {
       setError('Error streaming summary');
       setIsStreaming(false);
       source.close();
-      setEventSource(null);
+      eventSourceRef.current = null;
     };
-  };
+  }, []);
 
   useEffect(() => {
     return () => {
-      if (eventSource) {
-        eventSource.close();
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close();
       }
     };
-  }, [eventSource]);
+  }, []);
 
   return {
     summary,

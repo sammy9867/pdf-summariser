@@ -1,10 +1,12 @@
 import { Document } from '../types';
 
-const API_BASE = '/api/v1';
+const API_BASE = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000/api/v1';
 
 export const api = {
   getDocuments: async (): Promise<Document[]> => {
-    const response = await fetch(`${API_BASE}/documents`);
+    const response = await fetch(`${API_BASE}/documents`, {
+      credentials: 'include',
+    });
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(`Failed to fetch documents: ${errorText}`);
@@ -19,6 +21,7 @@ export const api = {
     const response = await fetch(`${API_BASE}/documents/upload`, {
       method: 'POST',
       body: formData,
+      credentials: 'include',
     });
 
     if (!response.ok) {
@@ -30,6 +33,8 @@ export const api = {
   },
 
   streamSummary: (documentUuid: string): EventSource => {
-    return new EventSource(`${API_BASE}/documents/${documentUuid}/stream`);
+    return new EventSource(`${API_BASE}/documents/${documentUuid}/stream`, {
+      withCredentials: true,
+    });
   },
 };
