@@ -4,8 +4,7 @@ import factory
 
 from django.contrib.auth import get_user_model
 
-from apps.documents.constants import DocumentSummaryStatus
-from apps.documents.models import UploadedFile, Document, DocumentSummary
+from apps.documents.models import UploadedFile, Document
 
 User = get_user_model()
 
@@ -30,19 +29,10 @@ class UploadedFileFactory(factory.django.DjangoModelFactory):
 
 
 class DocumentFactory(factory.django.DjangoModelFactory):
-    session_id = factory.Faker("uuid4")
+    session_key = factory.Faker("uuid4")
     uploaded_file = factory.SubFactory(UploadedFileFactory)
     user = factory.SubFactory(UserFactory)
     uuid = factory.LazyFunction(uuid.uuid4)
 
     class Meta:
         model = Document
-
-
-class DocumentSummaryFactory(factory.django.DjangoModelFactory):
-    status = DocumentSummaryStatus.PENDING
-    text = factory.Faker("paragraph")
-    uuid = factory.LazyFunction(uuid.uuid4)
-
-    class Meta:
-        model = DocumentSummary

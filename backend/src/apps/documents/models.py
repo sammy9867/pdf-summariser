@@ -4,8 +4,6 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils import timezone
 
-from apps.documents.constants import DocumentSummaryStatus
-
 User = get_user_model()
 
 
@@ -24,13 +22,7 @@ class UploadedFile(TimeStampedModel):
 
 
 class Document(TimeStampedModel):
-    session_id = models.CharField(max_length=255, db_index=True)
+    session_key = models.CharField(max_length=255, db_index=True)
     uploaded_file = models.ForeignKey(UploadedFile, on_delete=models.PROTECT)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    uuid = models.UUIDField(default=uuid.uuid4, unique=True)
-
-
-class DocumentSummary(TimeStampedModel):
-    status = models.CharField(max_length=20, choices=DocumentSummaryStatus.choices)
-    text = models.TextField(null=True, blank=True)
     uuid = models.UUIDField(default=uuid.uuid4, unique=True)

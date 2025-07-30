@@ -1,7 +1,7 @@
-def get_session_id_from_request(request):
-    session_id = request.session.session_key
-    if not session_id:
+def get_session_key_from_request(request):
+    session_key = request.session.session_key
+    if not session_key:
         request.session.save()
-        session_id = request.session.session_key
+        session_key = request.session.session_key
 
-    return session_id
+    return session_key

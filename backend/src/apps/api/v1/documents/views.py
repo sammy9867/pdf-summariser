@@ -13,9 +13,9 @@ from apps.api.v1.documents.serializers import (
     DocumentListSerializer,
     DocumentUploadSerializer,
 )
-from apps.api.v1.documents.utils import get_session_id_from_request
+from apps.api.v1.documents.utils import get_session_key_from_request
 from apps.documents.models import Document
-from apps.documents.services.document_summary import (
+from apps.documents.services.documents import (
     DocumentSummaryStreamError,
     document_can_stream_summary,
     document_stream_summary,
@@ -41,17 +41,17 @@ class DocumentListView(ListAPIView):
     serializer_class = DocumentListSerializer
 
     def get_queryset(self):
-        session_id = get_session_id_from_request(self.request)
-        if not session_id:
+        session_key = get_session_key_from_request(self.request)
+        if not session_key:
             return Document.objects.none()
-        return Document.objects.filter(session_id=session_id).order_by("-created")
+        return Document.objects.filter(session_key=session_key).order_by("-created")
 
 
 @csrf_exempt
 @require_GET
 def document_stream_view(request, document_uuid):
-    session = get_session_id_from_request(request)
-    document = get_object_or_404(Document, uuid=document_uuid, session_id=session)
+    session_key = get_session_key_from_request(request)
+    document = get_object_or_404(Document, uuid=document_uuid, session_key=session_key)
 
     try:
         document_can_stream_summary(document)

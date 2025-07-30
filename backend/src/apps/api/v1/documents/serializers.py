@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.api.v1.documents.utils import get_session_id_from_request
+from apps.api.v1.documents.utils import get_session_key_from_request
 from apps.documents.models import Document, UploadedFile
 
 
@@ -24,7 +24,6 @@ class DocumentListSerializer(serializers.ModelSerializer):
         read_only_fields = [
             "created",
             "modified",
-            "session_id",
             "uploaded_file",
             "uuid",
         ]
@@ -36,7 +35,7 @@ class DocumentUploadSerializer(serializers.Serializer):
 
     def create(self, validated_data) -> Document:
         request = self.context["request"]
-        session_id = get_session_id_from_request(request)
+        session_key = get_session_key_from_request(request)
 
         uploaded_file = UploadedFile.objects.create(
             file=validated_data["file"],
@@ -44,7 +43,7 @@ class DocumentUploadSerializer(serializers.Serializer):
             size=validated_data["file"].size,
         )
         document = Document.objects.create(
-            session_id=session_id, uploaded_file=uploaded_file
+            session_key=session_key, uploaded_file=uploaded_file
         )
 
         return document
