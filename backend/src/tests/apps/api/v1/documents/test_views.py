@@ -13,7 +13,7 @@ from rest_framework.test import APIClient
 from apps.api.v1.documents.serializers import DocumentListSerializer
 from apps.documents.factories import DocumentFactory
 from apps.documents.models import Document
-from apps.documents.services.document_summary import DocumentSummaryStreamError
+from apps.documents.services.documents import DocumentSummaryStreamError
 
 pytestmark = pytest.mark.django_db
 
