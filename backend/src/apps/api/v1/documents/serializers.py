@@ -13,7 +13,6 @@ class UploadedFileSerializer(serializers.ModelSerializer):
             "modified",
             "name",
             "size",
-            "url",
             "uuid",
         ]
         fields = read_only_fields

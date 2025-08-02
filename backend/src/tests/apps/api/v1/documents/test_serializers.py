@@ -21,7 +21,6 @@ def test_uploaded_file_serializer():
         "modified": DateTimeField().to_representation(uploaded_file.modified),
         "name": uploaded_file.name,
         "size": uploaded_file.size,
-        "url": uploaded_file.url,
         "uuid": str(uploaded_file.uuid),
     } == UploadedFileSerializer(uploaded_file).data
 

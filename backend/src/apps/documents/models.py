@@ -19,10 +19,6 @@ class UploadedFile(TimeStampedModel):
     content_type = models.CharField(max_length=100, null=True, blank=True)
     uuid = models.UUIDField(default=uuid.uuid4, unique=True)
 
-    @property
-    def url(self) -> str:
-        return "url"
-
 
 class Document(TimeStampedModel):
     session_key = models.CharField(max_length=255, db_index=True)
