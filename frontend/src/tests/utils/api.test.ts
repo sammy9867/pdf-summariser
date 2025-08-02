@@ -31,7 +31,7 @@ describe('API Utils', () => {
 
   describe('uploadDocument', () => {
     it('should upload document successfully', async () => {
-      const fileName = `${faker.system.fileName()}.pdf`
+      const fileName = `${faker.system.fileName()}.pdf`;
       const mockFile = new File(['content'], fileName, { type: 'application/pdf' });
 
       const result = await api.uploadDocument(mockFile);

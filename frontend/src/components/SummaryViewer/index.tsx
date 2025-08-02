@@ -80,8 +80,6 @@ export const SummaryViewer: React.FC<SummaryViewerProps> = ({ documentUuid, docu
                 <p>No summary available</p>
               </div>
             )}
-
-            {isStreaming && summary && <div className='summary-cursor'>▌</div>}
           </>
         )}
       </div>
