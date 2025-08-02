@@ -18,7 +18,7 @@ export const server = createServer({
       },
       uploaded_file() {
         return {
-          name: faker.system.fileName({ extension: 'pdf' }),
+          name: `${faker.system.fileName()}.pdf`,
           file: faker.system.filePath(),
           size: faker.number.int({ min: 1024, max: 10485760 }),
           created: faker.date.recent().toISOString(),
@@ -36,7 +36,7 @@ export const server = createServer({
     this.urlPrefix = 'http://localhost:8000';
 
     this.get('/documents', (schema) => {
-      return schema.documents.all().models.map((model: any) => model.attrs);
+      return schema.all('document').models.map((model: any) => model.attrs);
     });
 
     this.post('/documents/upload', (schema, request) => {
@@ -44,7 +44,7 @@ export const server = createServer({
         created: faker.date.recent().toISOString(),
         modified: faker.date.recent().toISOString(),
         uploaded_file: {
-          name: faker.system.fileName({ extension: 'pdf' }),
+          name: `${faker.system.fileName()}.pdf`,
           file: faker.system.filePath(),
           size: faker.number.int({ min: 1024, max: 10485760 }),
           created: faker.date.recent().toISOString(),
@@ -53,7 +53,7 @@ export const server = createServer({
         uuid: faker.string.uuid(),
       };
 
-      const document = schema.documents.create(documentData);
+      const document = schema.create('document', documentData);
       return document.attrs;
     });
 
