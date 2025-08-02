@@ -48,7 +48,7 @@ describe('useDocumentSummary', () => {
     });
 
     const summaryMessage = {
-      data: JSON.stringify({ type: 'summary', summary: summaryText })
+      data: JSON.stringify({ type: 'summary', summary: summaryText }),
     } as MessageEvent;
 
     act(() => {
@@ -68,7 +68,7 @@ describe('useDocumentSummary', () => {
     });
 
     const endMessage = {
-      data: JSON.stringify({ type: 'end' })
+      data: JSON.stringify({ type: 'end' }),
     } as MessageEvent;
 
     act(() => {
@@ -90,7 +90,7 @@ describe('useDocumentSummary', () => {
     });
 
     const errorMessage = {
-      data: JSON.stringify({ type: 'error', error: errorText })
+      data: JSON.stringify({ type: 'error', error: errorText }),
     } as MessageEvent;
 
     act(() => {

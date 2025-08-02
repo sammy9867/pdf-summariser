@@ -20,20 +20,17 @@ export const MainContent: React.FC = () => {
   };
 
   return (
-    <div className="main-content">
-      <div className="main-content-top">
-        <div className="main-content-left">
+    <div className='main-content'>
+      <div className='main-content-top'>
+        <div className='main-content-left'>
           <UploadZone onUploadSuccess={handleUploadSuccess} />
         </div>
-        <div className="main-content-right">
-          <SummaryViewer
-            documentUuid={selectedDocumentUuid}
-            documentName={selectedDocumentName}
-          />
+        <div className='main-content-right'>
+          <SummaryViewer documentUuid={selectedDocumentUuid} documentName={selectedDocumentName} />
         </div>
       </div>
 
-      <div className="main-content-bottom">
+      <div className='main-content-bottom'>
         <DocumentsList
           onDocumentSelect={handleDocumentSelect}
           selectedDocumentUuid={selectedDocumentUuid || undefined}

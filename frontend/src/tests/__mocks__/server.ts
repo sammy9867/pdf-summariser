@@ -10,8 +10,12 @@ export const server = createServer({
 
   factories: {
     document: Factory.extend({
-      created() { return faker.date.recent().toISOString(); },
-      modified() { return faker.date.recent().toISOString(); },
+      created() {
+        return faker.date.recent().toISOString();
+      },
+      modified() {
+        return faker.date.recent().toISOString();
+      },
       uploaded_file() {
         return {
           name: faker.system.fileName({ extension: 'pdf' }),
@@ -21,7 +25,9 @@ export const server = createServer({
           modified: faker.date.recent().toISOString(),
         };
       },
-      uuid() { return faker.string.uuid(); },
+      uuid() {
+        return faker.string.uuid();
+      },
     }),
   },
 

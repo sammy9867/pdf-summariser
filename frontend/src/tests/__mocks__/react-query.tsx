@@ -9,9 +9,5 @@ export const TestQueryWrapper: React.FC<{ children: React.ReactNode }> = ({ chil
     },
   });
 
-  return (
-    <QueryClientProvider client={queryClient}>
-      {children}
-    </QueryClientProvider>
-  );
+  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 };

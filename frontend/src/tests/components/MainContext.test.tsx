@@ -5,8 +5,10 @@ import { TestQueryWrapper } from '../__mocks__/react-query';
 
 jest.mock('../../components/UploadZone', () => ({
   UploadZone: ({ onUploadSuccess }: { onUploadSuccess: (doc: any) => void }) => (
-    <div data-testid="upload-zone">
-      <button onClick={() => onUploadSuccess({ uuid: 'test-uuid', uploaded_file: { name: 'test.pdf' }})}>
+    <div data-testid='upload-zone'>
+      <button
+        onClick={() => onUploadSuccess({ uuid: 'test-uuid', uploaded_file: { name: 'test.pdf' } })}
+      >
         Upload
       </button>
     </div>
@@ -14,23 +16,30 @@ jest.mock('../../components/UploadZone', () => ({
 }));
 
 jest.mock('../../components/SummaryViewer', () => ({
-  SummaryViewer: ({ documentUuid, documentName }: { documentUuid: string | null; documentName?: string }) => (
-    <div data-testid="summary-viewer">
+  SummaryViewer: ({
+    documentUuid,
+    documentName,
+  }: {
+    documentUuid: string | null;
+    documentName?: string;
+  }) => (
+    <div data-testid='summary-viewer'>
       {documentUuid ? `${documentName} (${documentUuid})` : 'No document'}
     </div>
   ),
 }));
 
 jest.mock('../../components/DocumentsList', () => ({
-  DocumentsList: ({ onDocumentSelect, selectedDocumentUuid }: {
+  DocumentsList: ({
+    onDocumentSelect,
+    selectedDocumentUuid,
+  }: {
     onDocumentSelect: (id: string, name: string) => void;
     selectedDocumentUuid?: string;
   }) => (
-    <div data-testid="documents-list">
+    <div data-testid='documents-list'>
       <div>Selected: {selectedDocumentUuid || 'None'}</div>
-      <button onClick={() => onDocumentSelect('doc-1', 'doc1.pdf')}>
-        Select Document
-      </button>
+      <button onClick={() => onDocumentSelect('doc-1', 'doc1.pdf')}>Select Document</button>
     </div>
   ),
 }));
@@ -39,7 +48,8 @@ describe('MainContent', () => {
   it('should render all components', () => {
     render(
       <TestQueryWrapper>
-        <MainContent />
+        <MainContent
+        />
       </TestQueryWrapper>
     );
 
