@@ -14,8 +14,8 @@ export const MainContent: React.FC = () => {
     setSelectedDocumentName(document.uploaded_file.name);
   };
 
-  const handleDocumentSelect = (documentId: string, documentName: string) => {
-    setSelectedDocumentUuid(documentId);
+  const handleDocumentSelect = (documentUuid: string, documentName: string) => {
+    setSelectedDocumentUuid(documentUuid);
     setSelectedDocumentName(documentName);
   };
 
