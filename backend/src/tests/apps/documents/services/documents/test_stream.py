@@ -3,7 +3,7 @@ from unittest.mock import Mock, patch
 import pytest
 
 from apps.documents.factories import DocumentFactory
-from apps.documents.services.documents import (
+from apps.documents.services.documents.stream import (
     DocumentSummaryStreamError,
     document_can_stream_summary,
     document_stream_summary,

@@ -15,7 +15,7 @@ from apps.api.v1.documents.serializers import (
 )
 from apps.api.v1.documents.utils import get_session_key_from_request
 from apps.documents.models import Document
-from apps.documents.services.documents import (
+from apps.documents.services.documents.stream import (
     DocumentSummaryStreamError,
     document_can_stream_summary,
     document_stream_summary,
