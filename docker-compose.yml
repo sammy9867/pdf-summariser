@@ -11,12 +11,32 @@ services:
     networks:
       - pdf-summariser-network
 
+  localstack:
+    image: localstack/localstack:3.0
+    environment:
+      - SERVICES=s3
+      - DEBUG=1
+      - PERSISTENCE=1
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - AWS_DEFAULT_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - SKIP_INFRA_DOWNLOADS=1
+    ports:
+      - "4566:4566"
+    volumes:
+      - localstack-data:/var/lib/localstack
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - pdf-summariser-network
+
   pdf-summariser-backend:
     build:
       context: ./backend
       dockerfile: Dockerfile.dev
     depends_on:
       - postgres-db
+      - localstack
     ports:
       - "8000:8000"
     env_file:
@@ -44,3 +64,4 @@ networks:
 
 volumes:
   pg-data:
+  localstack-data:

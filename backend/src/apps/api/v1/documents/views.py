@@ -1,6 +1,6 @@
 import json
 
-from django.http import HttpResponseBadRequest, StreamingHttpResponse
+from django.http import StreamingHttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
 
@@ -15,11 +15,7 @@ from apps.api.v1.documents.serializers import (
 )
 from apps.api.v1.documents.utils import get_session_key_from_request
 from apps.documents.models import Document
-from apps.documents.services.documents import (
-    DocumentSummaryStreamError,
-    document_can_stream_summary,
-    document_stream_summary,
-)
+from apps.documents.services.documents.stream import document_stream_summary
 
 
 class DocumentUploadView(CreateAPIView):
@@ -52,11 +48,6 @@ class DocumentListView(ListAPIView):
 def document_stream_view(request, document_uuid):
     session_key = get_session_key_from_request(request)
     document = get_object_or_404(Document, uuid=document_uuid, session_key=session_key)
-
-    try:
-        document_can_stream_summary(document)
-    except DocumentSummaryStreamError as e:
-        return HttpResponseBadRequest(str(e))
 
     def generate_sse_event_stream():
         for word in document_stream_summary(document):

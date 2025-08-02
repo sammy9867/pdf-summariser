@@ -1,9 +1,9 @@
 export interface UploadedFile {
   created: string;
-  file: string;
   modified: string;
   name: string;
   size: number;
+  uuid: string;
 }
 
 export interface Document {

@@ -7,7 +7,10 @@ django-cors-headers~=4.7.0
 psycopg2-binary~=2.9.10
 
 # HTTP
-requests~=2.32.3
+requests~=2.32.4
 
 # Factory boy
 factory_boy~=3.3.3
+
+# AWS
+boto3~=1.40.1

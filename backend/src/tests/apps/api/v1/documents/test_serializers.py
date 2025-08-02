@@ -18,10 +18,10 @@ def test_uploaded_file_serializer():
     uploaded_file = UploadedFileFactory()
     assert {
         "created": DateTimeField().to_representation(uploaded_file.created),
-        "file": uploaded_file.file.url,
         "modified": DateTimeField().to_representation(uploaded_file.modified),
         "name": uploaded_file.name,
         "size": uploaded_file.size,
+        "uuid": str(uploaded_file.uuid),
     } == UploadedFileSerializer(uploaded_file).data
 
 

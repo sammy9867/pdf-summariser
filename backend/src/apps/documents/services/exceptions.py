@@ -18,8 +18,15 @@ class ServiceError(Exception):
         return self.message
 
 
-class DocumentSummaryStreamError(ServiceError):
-    message = "Document Summary stream error"
+class DocumentCreateError(ServiceError):
+    message = "Document Create error"
 
     class Code(ServiceError.Code):
-        INVALID_FILE_PATH = "Invalid file path"
+        FILE_UPLOAD_FAILED = "File upload failed"
+
+
+class UploadedFileCreateError(ServiceError):
+    message = "Uploaded File create error"
+
+    class Code(ServiceError.Code):
+        FILE_UPLOAD_FAILED = "File upload failed"
