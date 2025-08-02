@@ -25,10 +25,10 @@ export const SummaryViewer: React.FC<SummaryViewerProps> = ({ documentUuid, docu
 
   if (!documentUuid) {
     return (
-      <div className="summary-viewer-container">
-        <h2 className="summary-viewer-title">AI Summary</h2>
-        <div className="summary-placeholder">
-          <div className="summary-placeholder-icon">🤖</div>
+      <div className='summary-viewer-container'>
+        <h2 className='summary-viewer-title'>AI Summary</h2>
+        <div className='summary-placeholder'>
+          <div className='summary-placeholder-icon'>🤖</div>
           <p>Upload a PDF or select a document to see its AI-generated summary</p>
         </div>
       </div>
@@ -36,21 +36,21 @@ export const SummaryViewer: React.FC<SummaryViewerProps> = ({ documentUuid, docu
   }
 
   return (
-    <div className="summary-viewer-container">
-      <h2 className="summary-viewer-title">AI Summary</h2>
+    <div className='summary-viewer-container'>
+      <h2 className='summary-viewer-title'>AI Summary</h2>
       {documentName && (
-        <div className="summary-document-info">
-          <span className="summary-document-name">📄 {documentName}</span>
-          {isStreaming && <span className="summary-streaming-indicator">✨ Generating...</span>}
+        <div className='summary-document-info'>
+          <span className='summary-document-name'>📄 {documentName}</span>
+          {isStreaming && <span className='summary-streaming-indicator'>✨ Generating...</span>}
         </div>
       )}
 
-      <div className="summary-content" ref={summaryRef}>
+      <div className='summary-content' ref={summaryRef}>
         {error ? (
-          <div className="summary-error">
+          <div className='summary-error'>
             <p>❌ {error}</p>
             <button
-              className="summary-retry-button"
+              className='summary-retry-button'
               onClick={() => documentUuid && startStream(documentUuid)}
             >
               Retry
@@ -59,16 +59,16 @@ export const SummaryViewer: React.FC<SummaryViewerProps> = ({ documentUuid, docu
         ) : (
           <>
             {summary ? (
-              <div className="summary-text">
+              <div className='summary-text'>
                 {summary.split('\n').map((paragraph, index) => (
-                  <p key={index} className="summary-paragraph">
+                  <p key={index} className='summary-paragraph'>
                     {paragraph}
                   </p>
                 ))}
               </div>
             ) : isStreaming ? (
-              <div className="summary-loading">
-                <div className="summary-dots">
+              <div className='summary-loading'>
+                <div className='summary-dots'>
                   <span></span>
                   <span></span>
                   <span></span>
@@ -76,14 +76,12 @@ export const SummaryViewer: React.FC<SummaryViewerProps> = ({ documentUuid, docu
                 <p>Analyzing document and generating summary...</p>
               </div>
             ) : (
-              <div className="summary-placeholder">
+              <div className='summary-placeholder'>
                 <p>No summary available</p>
               </div>
             )}
 
-            {isStreaming && summary && (
-              <div className="summary-cursor">▌</div>
-            )}
+            {isStreaming && summary && <div className='summary-cursor'>▌</div>}
           </>
         )}
       </div>

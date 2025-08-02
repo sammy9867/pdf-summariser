@@ -21,7 +21,7 @@ describe('SummaryViewer', () => {
   });
 
   it('renders summary content when document provided', () => {
-    render(<SummaryViewer documentUuid="test-id" documentName="test.pdf" />);
+    render(<SummaryViewer documentUuid='test-id' documentName='test.pdf' />);
 
     expect(screen.getByText('AI Summary')).toBeInTheDocument();
     expect(screen.getByText('📄 test.pdf')).toBeInTheDocument();

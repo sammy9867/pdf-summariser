@@ -11,10 +11,10 @@ const mockUseDocuments = {
       created: '2024-01-01T00:00:00Z',
       uploaded_file: { name: 'test.pdf', size: 1024 },
       uuid: 'doc-1',
-    }
+    },
   ],
   isLoading: false,
-  error: null
+  error: null,
 };
 
 jest.mock('../../hooks/useDocuments', () => ({
