@@ -48,8 +48,7 @@ describe('MainContent', () => {
   it('should render all components', () => {
     render(
       <TestQueryWrapper>
-        <MainContent
-        />
+        <MainContent />
       </TestQueryWrapper>
     );
 
