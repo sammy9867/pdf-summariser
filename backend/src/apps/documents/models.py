@@ -1,10 +1,7 @@
 import uuid
 
-from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils import timezone
-
-User = get_user_model()
 
 
 class TimeStampedModel(models.Model):
@@ -16,13 +13,18 @@ class TimeStampedModel(models.Model):
 
 
 class UploadedFile(TimeStampedModel):
-    file = models.FileField(upload_to="media/")
+    s3_key = models.CharField(max_length=500, unique=True)
     name = models.CharField(max_length=255)
     size = models.PositiveIntegerField(null=True)
+    content_type = models.CharField(max_length=100, null=True, blank=True)
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True)
+
+    @property
+    def url(self) -> str:
+        return "url"
 
 
 class Document(TimeStampedModel):
     session_key = models.CharField(max_length=255, db_index=True)
     uploaded_file = models.ForeignKey(UploadedFile, on_delete=models.PROTECT)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     uuid = models.UUIDField(default=uuid.uuid4, unique=True)
