@@ -13,10 +13,10 @@ class TimeStampedModel(models.Model):
 
 
 class UploadedFile(TimeStampedModel):
-    s3_key = models.CharField(max_length=500, unique=True)
-    name = models.CharField(max_length=255)
-    size = models.PositiveIntegerField(null=True)
     content_type = models.CharField(max_length=100, null=True, blank=True)
+    name = models.CharField(max_length=255)
+    s3_key = models.CharField(max_length=500, unique=True)
+    size = models.PositiveIntegerField(null=True)
     uuid = models.UUIDField(default=uuid.uuid4, unique=True)
 
 
