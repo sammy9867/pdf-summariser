@@ -61,6 +61,8 @@ pre-commit==4.2.0
     # via -r requirements/test.in
 psycopg2-binary==2.9.10
     # via -r requirements/base.in
+pypdf==5.9.0
+    # via -r requirements/base.in
 pytest==8.3.5
     # via
     #   -r requirements/test.in

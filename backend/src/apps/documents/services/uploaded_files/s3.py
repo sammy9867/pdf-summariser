@@ -61,3 +61,15 @@ def s3_upload_file(file: InMemoryUploadedFile) -> str:
         raise e
 
     return s3_key
+
+
+def s3_download_file(s3_key: str) -> bytes:
+    s3_client = _get_client()
+    _ensure_bucket_exists(s3_client)
+    try:
+        response = s3_client.get_object(
+            Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=s3_key
+        )
+        return response["Body"].read()
+    except ClientError as e:
+        raise e

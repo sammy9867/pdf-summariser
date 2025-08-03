@@ -25,8 +25,20 @@ class DocumentCreateError(ServiceError):
         FILE_UPLOAD_FAILED = "File upload failed"
 
 
+class DocumentSummaryStreamError(ServiceError):
+    class Code:
+        PDF_PROCESSING_ERROR = "pdf_processing_error"
+
+
 class UploadedFileCreateError(ServiceError):
     message = "Uploaded File create error"
 
     class Code(ServiceError.Code):
         FILE_UPLOAD_FAILED = "File upload failed"
+
+
+class UploadedFileGetContentError(ServiceError):
+    message = "Uploaded File get content error"
+
+    class Code(ServiceError.Code):
+        FILE_DOWNLOAD_FAILED = "File download failed"
