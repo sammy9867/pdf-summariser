@@ -1,4 +1,5 @@
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.db import transaction
 
 from apps.documents.models import Document
 from apps.documents.services.exceptions import (
@@ -8,6 +9,7 @@ from apps.documents.services.exceptions import (
 from apps.documents.services.uploaded_files.create import uploaded_file_create
 
 
+@transaction.atomic
 def document_create(file: InMemoryUploadedFile, session_key: str) -> Document:
     codes = DocumentCreateError.Code
     try:
