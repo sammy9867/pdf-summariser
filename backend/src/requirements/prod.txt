@@ -43,7 +43,7 @@ packaging==25.0
     # via gunicorn
 psycopg2-binary==2.9.10
     # via -r requirements/base.in
-pypdf2==3.0.1
+pypdf==5.9.0
     # via -r requirements/base.in
 python-dateutil==2.9.0.post0
     # via botocore

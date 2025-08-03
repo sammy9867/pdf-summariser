@@ -85,7 +85,7 @@ pygments==2.19.2
     # via
     #   ipython
     #   ipython-pygments-lexers
-pypdf2==3.0.1
+pypdf==5.9.0
     # via -r requirements/base.in
 python-dateutil==2.9.0.post0
     # via botocore

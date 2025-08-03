@@ -16,4 +16,4 @@ factory_boy~=3.3.3
 boto3~=1.40.1
 
 # PDF
-PyPDF2~=3.0.1
+pypdf~=5.9.0
