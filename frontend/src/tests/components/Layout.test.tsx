@@ -10,7 +10,7 @@ describe('Layout', () => {
     );
 
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('PDF Summariser');
-    expect(screen.getByText('Upload, Analyze & Summarize PDFs in Real-time')).toBeInTheDocument();
+    expect(screen.getByText('Upload, Analyse & Summarise PDFs in Real-time')).toBeInTheDocument();
     expect(screen.getByText('Test Content')).toBeInTheDocument();
   });
 
