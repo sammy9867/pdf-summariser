@@ -1,3 +1,4 @@
+import logging
 from typing import Generator
 from io import BytesIO
 
@@ -6,6 +7,8 @@ import pypdf
 from apps.documents.models import Document
 from apps.documents.services.exceptions import DocumentSummaryStreamError
 from apps.documents.services.uploaded_files.get import uploaded_file_get_content
+
+logger = logging.getLogger(__name__)
 
 
 def _extract_text_from_pdf(pdf_content: bytes) -> str:
@@ -23,7 +26,8 @@ def _extract_text_from_pdf(pdf_content: bytes) -> str:
             text_content += page.extract_text() + "\n"
 
         return text_content.strip()
-    except Exception:
+    except Exception as e:
+        logger.error(f"Exception while extracting text from PDF: {e}")
         raise DocumentSummaryStreamError(codes.PDF_PROCESSING_ERROR)
 
 
