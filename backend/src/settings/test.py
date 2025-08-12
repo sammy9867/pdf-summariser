@@ -11,3 +11,5 @@ DATABASES["default"]["TEST"]["NAME"] = "test_" + str(os.getpid())
 DEFAULT_FILE_STORAGE = "django.core.files.storage.InMemoryStorage"
 
 AWS_STORAGE_BUCKET_NAME = "pdf-summariser-bucket-test"
+
+LOGGING = {}
