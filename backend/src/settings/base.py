@@ -44,6 +44,7 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     "rest_framework",
     "corsheaders",
+    "ninja",
 ]
 
 LOCAL_APPS = [
@@ -81,7 +82,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "wsgi.application"
+ASGI_APPLICATION = "asgi.application"
 
 
 # Django Rest Framework
