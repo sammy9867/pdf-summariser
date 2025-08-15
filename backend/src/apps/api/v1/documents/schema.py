@@ -1,4 +1,4 @@
-from ninja import ModelSchema
+from ninja import ModelSchema, Schema
 
 from apps.documents.models import Document, UploadedFile
 
@@ -28,3 +28,7 @@ class DocumentListSchema(ModelSchema):
             "uuid",
         ]
         fields = read_only_fields
+
+
+class ErrorSchema(Schema):
+    detail: str

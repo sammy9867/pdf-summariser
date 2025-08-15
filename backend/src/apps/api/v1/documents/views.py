@@ -1,16 +1,11 @@
 import json
 
 from django.http import HttpRequest, StreamingHttpResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_GET
-
-from rest_framework.generics import get_object_or_404
 
 from ninja import File, Router
 from ninja.files import UploadedFile as NinjaUploadedFile
 
-from apps.api.v1.documents.schema import DocumentListSchema
-from apps.api.v1.documents.utils import get_session_key_from_request
+from apps.api.v1.documents.schema import DocumentListSchema, ErrorSchema
 from apps.documents.models import Document
 from apps.documents.services.documents.create import document_create
 from apps.documents.services.documents.stream import document_stream_summary
@@ -48,14 +43,25 @@ async def document_list_view(request: HttpRequest):
     return [document async for document in queryset]
 
 
-@csrf_exempt
-@require_GET
-def document_stream_view(request, document_uuid):
-    session_key = get_session_key_from_request(request)
-    document = get_object_or_404(Document, uuid=document_uuid, session_key=session_key)
+@router.get(
+    "{document_uuid}/stream",
+    response={404: ErrorSchema},
+    url_name="documents-stream",
+)
+async def document_stream_view(request, document_uuid):
+    document = (
+        await Document.objects.filter(
+            uuid=document_uuid,
+            session_key=request.session.session_key,
+        )
+        .select_related("uploaded_file")
+        .afirst()
+    )
+    if not document:
+        return 404, {"detail": "Document not found"}
 
-    def generate_sse_event_stream():
-        for word in document_stream_summary(document):
+    async def generate_sse_event_stream():
+        async for word in document_stream_summary(document):
             data = {"type": "summary", "summary": word}
             yield f"data: {json.dumps(data)}\n\n"
 

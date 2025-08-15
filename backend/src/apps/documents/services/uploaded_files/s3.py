@@ -80,6 +80,6 @@ async def s3_download_file(s3_key: str) -> bytes:
             response = await s3_client.get_object(
                 Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=s3_key
             )
-            return response["Body"].read()
+            return await response["Body"].read()
         except ClientError as e:
             raise e

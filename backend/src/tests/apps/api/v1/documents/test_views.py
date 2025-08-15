@@ -4,19 +4,19 @@ from unittest.mock import patch
 from django.conf import settings
 from django.contrib.sessions.backends.db import SessionStore
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import Client
-from django.urls import reverse, reverse_lazy
+from django.test import AsyncClient
+from django.urls import reverse_lazy
 
 import pytest
 
-from rest_framework import status
-
 from apps.api.v1.documents.schema import DocumentListSchema
-from apps.documents.factories import DocumentFactory
 from apps.documents.models import Document
-from tests.apps.api.v1.documents.utils import dump_with_django_encoder
+from tests.apps.api.v1.documents.utils import (
+    create_document,
+    dump_with_django_encoder,
+)
 
-pytestmark = pytest.mark.django_db
+pytestmark = pytest.mark.django_db(transaction=True)
 
 
 @pytest.fixture
@@ -25,8 +25,8 @@ def session() -> SessionStore:
 
 
 @pytest.fixture
-def api_client(session) -> Client:
-    api_client = Client()
+def api_client(session) -> AsyncClient:
+    api_client = AsyncClient()
     api_client.cookies[settings.SESSION_COOKIE_NAME] = session.session_key
     return api_client
 
@@ -43,17 +43,19 @@ class TestDocumentUploadView:
         return {"file": file}
 
     @patch("apps.documents.services.uploaded_files.create.s3_upload_file")
-    def test_upload__success(self, mock_s3_upload_file, api_client, payload):
+    async def test_upload__success(self, mock_s3_upload_file, api_client, payload):
         mock_s3_upload_file.return_value = "s3_key"
-        response = api_client.post(self.URL, payload)
+        response = await api_client.post(self.URL, payload)
         assert response.status_code == 201
         result = response.json()
-        document = Document.objects.get(uuid=result["uuid"])
+        document = await Document.objects.select_related(
+            "uploaded_file",
+        ).aget(uuid=result["uuid"])
         assert document.session_key
         assert result == dump_with_django_encoder(DocumentListSchema, document)
 
-    def test_upload__fails_without_file(self, api_client):
-        response = api_client.post(self.URL, {})
+    async def test_upload__fails_without_file(self, api_client):
+        response = await api_client.post(self.URL, {})
         assert response.status_code == 400
         assert response.json()["detail"][0] == {
             "type": "missing",
@@ -65,11 +67,11 @@ class TestDocumentUploadView:
 class TestDocumentListView:
     URL = reverse_lazy("api-v1:documents-list")
 
-    def test_list__success(self, api_client, session):
-        document = DocumentFactory(session_key=session.session_key)
+    async def test_list__success(self, api_client, session):
+        document = await create_document(session_key=session.session_key)
         # Different session key, won't be returned
-        DocumentFactory()
-        response = api_client.get(self.URL)
+        await create_document(session_key=str(uuid.uuid4()))
+        response = await api_client.get(self.URL)
         assert response.status_code == 200
         result = response.json()
         assert result == [dump_with_django_encoder(DocumentListSchema, document)]
@@ -78,39 +80,45 @@ class TestDocumentListView:
 class TestDocumentSummaryStreamView:
     def _url(self, document=None):
         document_uuid = str(document.uuid) if document else str(uuid.uuid4())
-        return reverse(
-            "api-v1-document-summaries-stream",
+        return reverse_lazy(
+            "api-v1:documents-stream",
             kwargs={"document_uuid": document_uuid},
         )
 
-    @pytest.fixture
-    def document(self, api_client):
-        return DocumentFactory(session_key=api_client.session.session_key)
-
     @patch("apps.api.v1.documents.views.document_stream_summary")
-    def test_stream__success(
+    async def test_stream__success(
         self,
         mock_stream_summary,
         api_client,
-        document,
+        session,
     ):
-        summary_stream = iter(["Some ", "random ", "text ", "to ", "stream "])
+        async def async_summary_gen(summary_list):
+            for summary in summary_list:
+                yield summary
+
+        summary_stream = async_summary_gen(
+            ["Some ", "random ", "text ", "to ", "stream "]
+        )
         mock_stream_summary.return_value = summary_stream
+        document = await create_document(session_key=session.session_key)
 
-        response = api_client.get(self._url(document))
-        assert response.status_code == status.HTTP_200_OK
+        response = await api_client.get(self._url(document))
+        assert response.status_code == 200
         assert response["Content-Type"] == "text/event-stream"
-        content = b"".join(response.streaming_content).decode("utf-8")
 
-        for summary in summary_stream:
+        content = [data.decode("utf-8") async for data in response.streaming_content]
+        async for summary in summary_stream:
             assert summary in content, content
 
         mock_stream_summary.assert_called_once_with(document)
 
-    def test_stream__fails_when_document_does_not_exist(self, api_client):
-        response = api_client.get(self._url())
-        assert response.status_code == status.HTTP_404_NOT_FOUND
+    async def test_stream__fails_when_document_does_not_exist(self, api_client):
+        response = await api_client.get(self._url())
+        assert response.status_code == 404
+        assert response.json()["detail"] == "Document not found"
 
-    def test_stream__fails_with_invalid_session(self, document):
-        response = Client().get(self._url(document))
-        assert response.status_code == status.HTTP_404_NOT_FOUND
+    async def test_stream__fails_with_invalid_session(self, session):
+        document = await create_document(session_key=session.session_key)
+        response = await AsyncClient().get(self._url(document))
+        assert response.status_code == 404
+        assert response.json()["detail"] == "Document not found"

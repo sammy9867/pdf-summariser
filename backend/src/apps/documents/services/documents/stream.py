@@ -1,5 +1,5 @@
 import logging
-from typing import Generator
+from typing import AsyncGenerator
 from io import BytesIO
 
 import pypdf
@@ -11,7 +11,7 @@ from apps.documents.services.uploaded_files.get import uploaded_file_get_content
 logger = logging.getLogger(__name__)
 
 
-def _extract_text_from_pdf(pdf_content: bytes) -> str:
+async def _extract_text_from_pdf(pdf_content: bytes) -> str:
     codes = DocumentSummaryStreamError.Code
     try:
         pdf_file = BytesIO(pdf_content)
@@ -31,9 +31,9 @@ def _extract_text_from_pdf(pdf_content: bytes) -> str:
         raise DocumentSummaryStreamError(codes.PDF_PROCESSING_ERROR)
 
 
-def document_stream_summary(document: Document) -> Generator[str, None, None]:
-    file_content = uploaded_file_get_content(document.uploaded_file)
-    text_content = _extract_text_from_pdf(file_content)
+async def document_stream_summary(document: Document) -> AsyncGenerator:
+    file_content = await uploaded_file_get_content(document.uploaded_file)
+    text_content = await _extract_text_from_pdf(file_content)
 
     if not text_content:
         yield "No readable content found in the document."

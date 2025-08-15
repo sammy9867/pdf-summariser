@@ -23,6 +23,7 @@ class TestS3UploadFile:
     ):
         mock = AsyncMock()
         mock.__aenter__.return_value = AsyncMock()
+        mock.__aexit__.return_value = None
         mock_get_client.return_value = mock
         mock_ensure_bucket_exists.return_value = AsyncMock()
 
@@ -35,11 +36,13 @@ class TestS3UploadFile:
     ):
         mock = AsyncMock()
         mock.__aenter__.return_value = AsyncMock()
+        mock.__aexit__.return_value = None
         mock_get_client.return_value = mock
         mock_ensure_bucket_exists.side_effect = ClientError(
             error_response={},
             operation_name="some operation name",
         )
+
         with pytest.raises(ClientError):
             await s3_upload_file(file)
 
@@ -55,6 +58,7 @@ class TestS3UploadFile:
         )
         mock = AsyncMock()
         mock.__aenter__.return_value = s3_client
+        mock.__aexit__.return_value = None
         mock_get_client.return_value = mock
         mock_ensure_bucket_exists.return_value = AsyncMock()
 
@@ -67,9 +71,12 @@ class TestS3DownloadFile:
     @patch("apps.documents.services.uploaded_files.s3._get_client", autospec=True)
     async def test_download__success(self, mock_get_client, mock_ensure_bucket_exists):
         s3_client = AsyncMock()
-        s3_client.get_object.return_value = AsyncMock({"Body": "erer"})
+        response_body_mock = AsyncMock()
+        response_body_mock.read.return_value = b"erer"
+        s3_client.get_object.return_value = {"Body": response_body_mock}
         mock = AsyncMock()
         mock.__aenter__.return_value = s3_client
+        mock.__aexit__.return_value = None
         mock_get_client.return_value = mock
         mock_ensure_bucket_exists.return_value = AsyncMock()
 
@@ -82,11 +89,13 @@ class TestS3DownloadFile:
     ):
         mock = AsyncMock()
         mock.__aenter__.return_value = AsyncMock()
+        mock.__aexit__.return_value = None
         mock_get_client.return_value = mock
         mock_ensure_bucket_exists.side_effect = ClientError(
             error_response={},
             operation_name="some operation name",
         )
+
         with pytest.raises(ClientError):
             await s3_download_file("s3_key")
 
@@ -102,6 +111,7 @@ class TestS3DownloadFile:
         )
         mock = AsyncMock()
         mock.__aenter__.return_value = s3_client
+        mock.__aexit__.return_value = None
         mock_get_client.return_value = mock
         mock_ensure_bucket_exists.return_value = AsyncMock()
 
