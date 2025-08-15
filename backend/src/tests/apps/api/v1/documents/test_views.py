@@ -1,6 +1,8 @@
 import uuid
 from unittest.mock import patch
 
+from django.conf import settings
+from django.contrib.sessions.backends.db import SessionStore
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client
 from django.urls import reverse
@@ -8,23 +10,26 @@ from django.urls import reverse
 import pytest
 
 from rest_framework import status
-from rest_framework.test import APIClient
 
 from apps.api.v1.documents.serializers import DocumentListSerializer
+from apps.api.v1.documents.schema import DocumentListSchema
 from apps.documents.factories import DocumentFactory
 from apps.documents.models import Document
+from tests.apps.api.v1.documents.utils import dump_with_django_encoder
 
 pytestmark = pytest.mark.django_db
 
 
 @pytest.fixture
-def api_client():
-    return APIClient()
+def session() -> SessionStore:
+    return SessionStore(session_key=str(uuid.uuid4()))
 
 
 @pytest.fixture
-def stream_api_client():
-    return Client()
+def api_client(session) -> Client:
+    api_client = Client()
+    api_client.cookies[settings.SESSION_COOKIE_NAME] = session.session_key
+    return api_client
 
 
 class TestDocumentUploadView:
@@ -55,16 +60,14 @@ class TestDocumentUploadView:
 
 
 class TestDocumentListView:
-    URL = reverse("api-v1-documents-list")
-
-    def test_list__success(self, api_client):
-        document = DocumentFactory(session_key=api_client.session.session_key)
+    def test_list__success(self, api_client, session):
+        document = DocumentFactory(session_key=session.session_key)
         # Different session key, won't be returned
         DocumentFactory()
-        response = api_client.get(self.URL, format="json")
+        response = api_client.get("/api/v1/documents")
         assert response.status_code == status.HTTP_200_OK
         result = response.json()
-        assert result == DocumentListSerializer([document], many=True).data
+        assert result == [dump_with_django_encoder(DocumentListSchema, document)]
 
 
 class TestDocumentSummaryStreamView:
@@ -76,20 +79,20 @@ class TestDocumentSummaryStreamView:
         )
 
     @pytest.fixture
-    def document(self, stream_api_client):
-        return DocumentFactory(session_key=stream_api_client.session.session_key)
+    def document(self, api_client):
+        return DocumentFactory(session_key=api_client.session.session_key)
 
     @patch("apps.api.v1.documents.views.document_stream_summary")
     def test_stream__success(
         self,
         mock_stream_summary,
-        stream_api_client,
+        api_client,
         document,
     ):
         summary_stream = iter(["Some ", "random ", "text ", "to ", "stream "])
         mock_stream_summary.return_value = summary_stream
 
-        response = stream_api_client.get(self._url(document))
+        response = api_client.get(self._url(document))
         assert response.status_code == status.HTTP_200_OK
         assert response["Content-Type"] == "text/event-stream"
         content = b"".join(response.streaming_content).decode("utf-8")
@@ -99,8 +102,8 @@ class TestDocumentSummaryStreamView:
 
         mock_stream_summary.assert_called_once_with(document)
 
-    def test_stream__fails_when_document_does_not_exist(self, stream_api_client):
-        response = stream_api_client.get(self._url())
+    def test_stream__fails_when_document_does_not_exist(self, api_client):
+        response = api_client.get(self._url())
         assert response.status_code == status.HTTP_404_NOT_FOUND
 
     def test_stream__fails_with_invalid_session(self, document):
