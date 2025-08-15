@@ -46,12 +46,9 @@ django==5.2.5
     #   -r requirements/base.in
     #   django-cors-headers
     #   django-ninja
-    #   djangorestframework
 django-cors-headers==4.7.0
     # via -r requirements/base.in
 django-ninja==1.4.3
-    # via -r requirements/base.in
-djangorestframework==3.16.1
     # via -r requirements/base.in
 execnet==2.1.1
     # via pytest-xdist

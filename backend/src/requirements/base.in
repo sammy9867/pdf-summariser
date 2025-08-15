@@ -1,6 +1,5 @@
 # Django
 Django~=5.2.1
-djangorestframework~=3.16.0
 django-cors-headers~=4.7.0
 
 # PostgreSQL database adapter
