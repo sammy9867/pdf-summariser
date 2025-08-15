@@ -9,7 +9,7 @@ from django.urls import reverse_lazy
 
 import pytest
 
-from apps.api.v1.documents.schema import DocumentListSchema
+from apps.api.v1.documents.schemas import DocumentListSchema
 from apps.documents.models import Document
 from tests.apps.api.v1.documents.utils import (
     create_document,

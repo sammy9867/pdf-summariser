@@ -5,7 +5,7 @@ from django.http import HttpRequest, StreamingHttpResponse
 from ninja import File, Router
 from ninja.files import UploadedFile as NinjaUploadedFile
 
-from apps.api.v1.documents.schema import DocumentListSchema, ErrorSchema
+from apps.api.v1.documents.schemas import DocumentListSchema, ErrorSchema
 from apps.documents.models import Document
 from apps.documents.services.documents.create import document_create
 from apps.documents.services.documents.stream import document_stream_summary
