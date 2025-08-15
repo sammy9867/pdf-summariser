@@ -6,7 +6,7 @@ from apps.documents.factories import DocumentFactory
 from apps.documents.services.exceptions import DocumentSummaryStreamError
 from apps.documents.services.documents.stream import document_stream_summary
 
-pytestmark = pytest.mark.django_db
+pytestmark = pytest.mark.django_db(transaction=True)
 
 
 class TestDocumentStreamSummary:

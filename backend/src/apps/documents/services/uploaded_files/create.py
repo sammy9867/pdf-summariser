@@ -9,15 +9,15 @@ from apps.documents.services.uploaded_files.s3 import s3_upload_file
 logger = logging.getLogger(__name__)
 
 
-def uploaded_file_create(file: InMemoryUploadedFile) -> UploadedFile:
+async def uploaded_file_create(file: InMemoryUploadedFile) -> UploadedFile:
     codes = UploadedFileCreateError.Code
     try:
-        s3_key = s3_upload_file(file)
+        s3_key = await s3_upload_file(file)
     except Exception as e:
         logger.error(f"Exception while uploading file to S3: {e}")
         raise UploadedFileCreateError(code=codes.FILE_UPLOAD_FAILED)
 
-    uploaded_file = UploadedFile.objects.create(
+    uploaded_file = await UploadedFile.objects.acreate(
         s3_key=s3_key,
         name=file.name,
         size=file.size,

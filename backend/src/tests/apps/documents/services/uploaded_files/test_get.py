@@ -6,7 +6,7 @@ from apps.documents.factories import UploadedFileFactory
 from apps.documents.services.exceptions import UploadedFileGetContentError
 from apps.documents.services.uploaded_files.get import uploaded_file_get_content
 
-pytestmark = pytest.mark.django_db
+pytestmark = pytest.mark.django_db(transaction=True)
 
 
 class TestUploadedFileGetContent:
