@@ -5,13 +5,12 @@ from django.conf import settings
 from django.contrib.sessions.backends.db import SessionStore
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 
 import pytest
 
 from rest_framework import status
 
-from apps.api.v1.documents.serializers import DocumentListSerializer
 from apps.api.v1.documents.schema import DocumentListSchema
 from apps.documents.factories import DocumentFactory
 from apps.documents.models import Document
@@ -33,7 +32,7 @@ def api_client(session) -> Client:
 
 
 class TestDocumentUploadView:
-    URL = reverse("api-v1-documents-upload")
+    URL = reverse_lazy("api-v1:documents-upload")
 
     @pytest.fixture
     def file(self):
@@ -46,26 +45,32 @@ class TestDocumentUploadView:
     @patch("apps.documents.services.uploaded_files.create.s3_upload_file")
     def test_upload__success(self, mock_s3_upload_file, api_client, payload):
         mock_s3_upload_file.return_value = "s3_key"
-        response = api_client.post(self.URL, payload, format="multipart")
-        assert response.status_code == status.HTTP_201_CREATED
+        response = api_client.post(self.URL, payload)
+        assert response.status_code == 201
         result = response.json()
         document = Document.objects.get(uuid=result["uuid"])
         assert document.session_key
-        assert result == DocumentListSerializer(document).data
+        assert result == dump_with_django_encoder(DocumentListSchema, document)
 
     def test_upload__fails_without_file(self, api_client):
-        response = api_client.post(self.URL, {}, format="multipart")
-        assert response.status_code == status.HTTP_400_BAD_REQUEST
-        assert response.json()["file"] == ["No file was submitted."]
+        response = api_client.post(self.URL, {})
+        assert response.status_code == 400
+        assert response.json()["detail"][0] == {
+            "type": "missing",
+            "loc": ["file", "file"],
+            "msg": "Field required",
+        }
 
 
 class TestDocumentListView:
+    URL = reverse_lazy("api-v1:documents-list")
+
     def test_list__success(self, api_client, session):
         document = DocumentFactory(session_key=session.session_key)
         # Different session key, won't be returned
         DocumentFactory()
-        response = api_client.get("/api/v1/documents")
-        assert response.status_code == status.HTTP_200_OK
+        response = api_client.get(self.URL)
+        assert response.status_code == 200
         result = response.json()
         assert result == [dump_with_django_encoder(DocumentListSchema, document)]
 
