@@ -1,10 +1,10 @@
 from unittest.mock import AsyncMock, patch
 
-from botocore.exceptions import ClientError
-
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 import pytest
+
+from botocore.exceptions import ClientError
 
 from apps.documents.services.uploaded_files.s3 import s3_download_file, s3_upload_file
 

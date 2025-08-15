@@ -15,15 +15,15 @@ class TestUploadedFileGetContent:
         return UploadedFileFactory()
 
     @patch("apps.documents.services.uploaded_files.get.s3_download_file")
-    def test_get__success(self, mock_s3_download_file, uploaded_file):
+    async def test_get__success(self, mock_s3_download_file, uploaded_file):
         mock_s3_download_file.return_value = b"PDF summary"
-        content = uploaded_file_get_content(uploaded_file)
+        content = await uploaded_file_get_content(uploaded_file)
         assert content == b"PDF summary"
 
     @patch("apps.documents.services.uploaded_files.get.s3_download_file")
-    def test_get__fails_when_downloading_file(
+    async def test_get__fails_when_downloading_file(
         self, mock_s3_download_file, uploaded_file
     ):
         mock_s3_download_file.side_effect = Exception("exception")
         with pytest.raises(UploadedFileGetContentError):
-            uploaded_file_get_content(uploaded_file)
+            await uploaded_file_get_content(uploaded_file)
