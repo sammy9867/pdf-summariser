@@ -4,27 +4,44 @@
 #
 #    pip-compile --output-file=requirements/test.txt requirements/test.in
 #
+aioboto3==15.0.0
+    # via -r requirements/base.in
+aiobotocore[boto3]==2.23.0
+    # via aioboto3
+aiofiles==24.1.0
+    # via aioboto3
+aiohappyeyeballs==2.6.1
+    # via aiohttp
+aiohttp==3.12.15
+    # via aiobotocore
+aioitertools==0.12.0
+    # via aiobotocore
+aiosignal==1.4.0
+    # via aiohttp
 annotated-types==0.7.0
     # via pydantic
 asgiref==3.9.1
     # via
     #   django
     #   django-cors-headers
-boto3==1.40.1
-    # via -r requirements/base.in
-botocore==1.40.1
+attrs==25.3.0
+    # via aiohttp
+boto3==1.38.27
+    # via aiobotocore
+botocore==1.38.27
     # via
+    #   aiobotocore
     #   boto3
     #   s3transfer
-certifi==2025.7.14
+certifi==2025.8.3
     # via requests
 cfgv==3.4.0
     # via pre-commit
-charset-normalizer==3.4.2
+charset-normalizer==3.4.3
     # via requests
 distlib==0.4.0
     # via virtualenv
-django==5.2.4
+django==5.2.5
     # via
     #   -r requirements/base.in
     #   django-cors-headers
@@ -34,26 +51,38 @@ django-cors-headers==4.7.0
     # via -r requirements/base.in
 django-ninja==1.4.3
     # via -r requirements/base.in
-djangorestframework==3.16.0
+djangorestframework==3.16.1
     # via -r requirements/base.in
 execnet==2.1.1
     # via pytest-xdist
 factory-boy==3.3.3
     # via -r requirements/base.in
-faker==37.4.2
+faker==37.5.3
     # via factory-boy
-filelock==3.18.0
+filelock==3.19.1
     # via virtualenv
-identify==2.6.12
+frozenlist==1.7.0
+    # via
+    #   aiohttp
+    #   aiosignal
+identify==2.6.13
     # via pre-commit
 idna==3.10
-    # via requests
+    # via
+    #   requests
+    #   yarl
 iniconfig==2.1.0
     # via pytest
 jmespath==1.0.1
     # via
+    #   aiobotocore
     #   boto3
     #   botocore
+multidict==6.6.4
+    # via
+    #   aiobotocore
+    #   aiohttp
+    #   yarl
 nodeenv==1.9.1
     # via pre-commit
 packaging==25.0
@@ -64,6 +93,10 @@ pluggy==1.6.0
     # via pytest
 pre-commit==4.2.0
     # via -r requirements/test.in
+propcache==0.3.2
+    # via
+    #   aiohttp
+    #   yarl
 psycopg2-binary==2.9.10
     # via -r requirements/base.in
 pydantic==2.11.7
@@ -75,17 +108,16 @@ pypdf==5.9.0
 pytest==8.3.5
     # via
     #   -r requirements/test.in
-    #   pytest-asyncio
     #   pytest-django
     #   pytest-xdist
-pytest-asyncio==1.1.0
-    # via -r requirements/test.in
 pytest-django==4.11.1
     # via -r requirements/test.in
 pytest-xdist==3.6.1
     # via -r requirements/test.in
 python-dateutil==2.9.0.post0
-    # via botocore
+    # via
+    #   aiobotocore
+    #   botocore
 pyyaml==6.0.2
     # via pre-commit
 requests==2.32.4
@@ -109,5 +141,9 @@ urllib3==2.5.0
     # via
     #   botocore
     #   requests
-virtualenv==20.32.0
+virtualenv==20.34.0
     # via pre-commit
+wrapt==1.17.3
+    # via aiobotocore
+yarl==1.20.1
+    # via aiohttp

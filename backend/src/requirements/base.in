@@ -13,7 +13,7 @@ requests~=2.32.4
 factory_boy~=3.3.3
 
 # AWS
-boto3~=1.40.1
+aioboto3~=15.0.0
 
 # PDF
 pypdf~=5.9.0
