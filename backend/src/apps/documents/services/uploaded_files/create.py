@@ -17,10 +17,9 @@ async def uploaded_file_create(file: InMemoryUploadedFile) -> UploadedFile:
         logger.error(f"Exception while uploading file to S3: {e}")
         raise UploadedFileCreateError(code=codes.FILE_UPLOAD_FAILED)
 
-    uploaded_file = await UploadedFile.objects.acreate(
+    return await UploadedFile.objects.acreate(
         s3_key=s3_key,
         name=file.name,
         size=file.size,
         content_type=getattr(file, "content_type", None),
     )
-    return uploaded_file

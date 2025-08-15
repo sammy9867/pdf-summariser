@@ -48,7 +48,7 @@ async def document_list_view(request: HttpRequest):
     response={404: ErrorSchema},
     url_name="documents-stream",
 )
-async def document_stream_view(request, document_uuid):
+async def document_stream_view(request: HttpRequest, document_uuid: str):
     document = (
         await Document.objects.filter(
             uuid=document_uuid,
