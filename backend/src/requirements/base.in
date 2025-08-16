@@ -1,6 +1,5 @@
 # Django
 Django~=5.2.1
-djangorestframework~=3.16.0
 django-cors-headers~=4.7.0
 
 # PostgreSQL database adapter
@@ -13,7 +12,13 @@ requests~=2.32.4
 factory_boy~=3.3.3
 
 # AWS
-boto3~=1.40.1
+aioboto3~=15.0.0
 
 # PDF
 pypdf~=5.9.0
+
+# Django ninja
+django-ninja~=1.4.3
+
+# ASGI handler
+uvicorn~=0.24.0

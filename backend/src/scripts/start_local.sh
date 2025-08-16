@@ -8,5 +8,8 @@ set -o xtrace
 # Run migrations
 python3 manage.py migrate
 
-# Start Django development server
-python3 manage.py runserver 0.0.0.0:8000
+# Gets the directory where this script resides and moves one level up
+cd "$(dirname "$0")/.."
+
+# Start uvicorn server
+uvicorn asgi:application --host 0.0.0.0 --port 8000 --reload

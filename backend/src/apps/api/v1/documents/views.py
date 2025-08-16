@@ -1,56 +1,67 @@
 import json
 
-from django.http import StreamingHttpResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_GET
+from django.http import HttpRequest, StreamingHttpResponse
 
-from rest_framework import status
-from rest_framework.generics import CreateAPIView, ListAPIView, get_object_or_404
-from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
+from ninja import File, Router
+from ninja.files import UploadedFile as NinjaUploadedFile
 
-from apps.api.v1.documents.serializers import (
-    DocumentListSerializer,
-    DocumentUploadSerializer,
-)
-from apps.api.v1.documents.utils import get_session_key_from_request
+from apps.api.v1.documents.schemas import DocumentListSchema, ErrorSchema
 from apps.documents.models import Document
+from apps.documents.services.documents.create import document_create
 from apps.documents.services.documents.stream import document_stream_summary
 
+router = Router()
 
-class DocumentUploadView(CreateAPIView):
-    permission_classes = [AllowAny]
-    serializer_class = DocumentUploadSerializer
 
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        document = serializer.save()
-        return Response(
-            DocumentListSerializer(document).data, status=status.HTTP_201_CREATED
+@router.post(
+    "upload",
+    response={201: DocumentListSchema},
+    url_name="documents-upload",
+)
+async def document_upload_view(
+    request: HttpRequest, file: NinjaUploadedFile = File(...)
+):
+    session_key = request.session.session_key
+    return await document_create(file, session_key)
+
+
+@router.get(
+    "",
+    response=list[DocumentListSchema],
+    url_name="documents-list",
+)
+async def document_list_view(request: HttpRequest):
+    session_key = request.session.session_key
+    if not session_key:
+        return []
+
+    queryset = (
+        Document.objects.filter(session_key=session_key)
+        .select_related("uploaded_file")
+        .order_by("-created")
+    )
+    return [document async for document in queryset]
+
+
+@router.get(
+    "{document_uuid}/stream",
+    response={404: ErrorSchema},
+    url_name="documents-stream",
+)
+async def document_stream_view(request: HttpRequest, document_uuid: str):
+    document = (
+        await Document.objects.filter(
+            uuid=document_uuid,
+            session_key=request.session.session_key,
         )
+        .select_related("uploaded_file")
+        .afirst()
+    )
+    if not document:
+        return 404, {"detail": "Document not found"}
 
-
-class DocumentListView(ListAPIView):
-    pagination_class = None
-    permission_classes = [AllowAny]
-    serializer_class = DocumentListSerializer
-
-    def get_queryset(self):
-        session_key = get_session_key_from_request(self.request)
-        if not session_key:
-            return Document.objects.none()
-        return Document.objects.filter(session_key=session_key).order_by("-created")
-
-
-@csrf_exempt
-@require_GET
-def document_stream_view(request, document_uuid):
-    session_key = get_session_key_from_request(request)
-    document = get_object_or_404(Document, uuid=document_uuid, session_key=session_key)
-
-    def generate_sse_event_stream():
-        for word in document_stream_summary(document):
+    async def generate_sse_event_stream():
+        async for word in document_stream_summary(document):
             data = {"type": "summary", "summary": word}
             yield f"data: {json.dumps(data)}\n\n"
 

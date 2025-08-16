@@ -4,49 +4,94 @@
 #
 #    pip-compile --output-file=requirements/prod.txt requirements/prod.in
 #
+aioboto3==15.0.0
+    # via -r requirements/base.in
+aiobotocore[boto3]==2.23.0
+    # via aioboto3
+aiofiles==24.1.0
+    # via aioboto3
+aiohappyeyeballs==2.6.1
+    # via aiohttp
+aiohttp==3.12.15
+    # via aiobotocore
+aioitertools==0.12.0
+    # via aiobotocore
+aiosignal==1.4.0
+    # via aiohttp
+annotated-types==0.7.0
+    # via pydantic
 asgiref==3.9.1
     # via
     #   django
     #   django-cors-headers
-boto3==1.40.1
-    # via -r requirements/base.in
-botocore==1.40.1
+attrs==25.3.0
+    # via aiohttp
+boto3==1.38.27
+    # via aiobotocore
+botocore==1.38.27
     # via
+    #   aiobotocore
     #   boto3
     #   s3transfer
-certifi==2025.7.14
+certifi==2025.8.3
     # via requests
-charset-normalizer==3.4.2
+charset-normalizer==3.4.3
     # via requests
-django==5.2.4
+click==8.2.1
+    # via uvicorn
+django==5.2.5
     # via
     #   -r requirements/base.in
     #   django-cors-headers
-    #   djangorestframework
+    #   django-ninja
 django-cors-headers==4.7.0
     # via -r requirements/base.in
-djangorestframework==3.16.0
+django-ninja==1.4.3
     # via -r requirements/base.in
 factory-boy==3.3.3
     # via -r requirements/base.in
-faker==37.4.2
+faker==37.5.3
     # via factory-boy
+frozenlist==1.7.0
+    # via
+    #   aiohttp
+    #   aiosignal
 gunicorn==23.0.0
     # via -r requirements/prod.in
+h11==0.16.0
+    # via uvicorn
 idna==3.10
-    # via requests
+    # via
+    #   requests
+    #   yarl
 jmespath==1.0.1
     # via
+    #   aiobotocore
     #   boto3
     #   botocore
+multidict==6.6.4
+    # via
+    #   aiobotocore
+    #   aiohttp
+    #   yarl
 packaging==25.0
     # via gunicorn
+propcache==0.3.2
+    # via
+    #   aiohttp
+    #   yarl
 psycopg2-binary==2.9.10
     # via -r requirements/base.in
+pydantic==2.11.7
+    # via django-ninja
+pydantic-core==2.33.2
+    # via pydantic
 pypdf==5.9.0
     # via -r requirements/base.in
 python-dateutil==2.9.0.post0
-    # via botocore
+    # via
+    #   aiobotocore
+    #   botocore
 requests==2.32.4
     # via -r requirements/base.in
 s3transfer==0.13.1
@@ -55,9 +100,22 @@ six==1.17.0
     # via python-dateutil
 sqlparse==0.5.3
     # via django
+typing-extensions==4.14.1
+    # via
+    #   pydantic
+    #   pydantic-core
+    #   typing-inspection
+typing-inspection==0.4.1
+    # via pydantic
 tzdata==2025.2
     # via faker
 urllib3==2.5.0
     # via
     #   botocore
     #   requests
+uvicorn==0.24.0.post1
+    # via -r requirements/base.in
+wrapt==1.17.3
+    # via aiobotocore
+yarl==1.20.1
+    # via aiohttp
