@@ -19,3 +19,6 @@ pypdf~=5.9.0
 
 # Django ninja
 django-ninja~=1.4.3
+
+# ASGI handler
+uvicorn~=0.24.0

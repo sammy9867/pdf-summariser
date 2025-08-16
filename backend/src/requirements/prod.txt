@@ -37,6 +37,8 @@ certifi==2025.8.3
     # via requests
 charset-normalizer==3.4.3
     # via requests
+click==8.2.1
+    # via uvicorn
 django==5.2.5
     # via
     #   -r requirements/base.in
@@ -56,6 +58,8 @@ frozenlist==1.7.0
     #   aiosignal
 gunicorn==23.0.0
     # via -r requirements/prod.in
+h11==0.16.0
+    # via uvicorn
 idna==3.10
     # via
     #   requests
@@ -109,6 +113,8 @@ urllib3==2.5.0
     # via
     #   botocore
     #   requests
+uvicorn==0.24.0.post1
+    # via -r requirements/base.in
 wrapt==1.17.3
     # via aiobotocore
 yarl==1.20.1

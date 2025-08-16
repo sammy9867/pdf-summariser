@@ -5,11 +5,9 @@ set -o pipefail
 set -o nounset
 set -o xtrace
 
-gunicorn pdf_summariser.wsgi:application \
-  --bind 0.0.0.0:8000 \
+uvicorn asgi:application \
+  --host 0.0.0.0 \
+  --port 8000 \
   --workers 3 \
-  --worker-class sync \
-  --timeout 30 \
-  --access-logfile - \
-  --error-logfile - \
-  --log-level info
+  --log-level info \
+  --timeout-keep-alive 5
